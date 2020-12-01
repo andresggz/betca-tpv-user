@@ -9,9 +9,8 @@ on:
 jobs:
 
   test:
-    name: Unit Test
+    name: Test
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -19,4 +18,4 @@ jobs:
         with:
           java-version: 1.11
       - name: Maven Verify
-        run: mvn -B clean verify
+        run: mvn -B verify
