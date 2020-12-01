@@ -2,6 +2,8 @@
 ## Back-end con Tecnologías de Código Abierto (BETCA).
 > Aplicación TPV. Pretende ser un ejemplo práctico y real de todos los conocimientos vistos
 
+### Estado del código
+[![TPV User](https://github.com/miw-upm/betca-tpv-user/workflows/TPV%20User/badge.svg)](https://github.com/miw-upm/betca-tpv-user/actions?query=workflow%3A%22TPV+User%22)
 ### Tecnologías necesarias
 `Java` `Maven` `GitHub` `Spring-boot` 
 
