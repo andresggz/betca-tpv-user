@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import static es.upm.miw.betca_tpv_user.api.resources.UserResource.SEARCH;
-import static es.upm.miw.betca_tpv_user.api.resources.UserResource.USERS;
+import static es.upm.miw.betca_tpv_user.api.resources.UserResource.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -31,6 +31,29 @@ class UserResourceIT {
         this.restClientTestService.loginAdmin(this.webTestClient);
         System.out.println(this.restClientTestService.getTokenDto().getToken());
         assertTrue(this.restClientTestService.getTokenDto().getToken().length() > 10);
+    }
+
+    @Test
+    void testReadUser() {
+        this.restClientTestService.loginAdmin(this.webTestClient)
+                .get().uri(contextPath + USERS + MOBILE_ID,"666666003")
+                .exchange().expectStatus().isOk()
+                .expectBody(UserDto.class)
+                .value(user -> assertEquals("c1", user.getFirstName()));
+    }
+
+    @Test
+    void testReadUserNotFound() {
+        this.restClientTestService.loginAdmin(this.webTestClient)
+                .get().uri(contextPath + USERS + MOBILE_ID,"999666999")
+                .exchange().expectStatus().isNotFound();
+    }
+
+    @Test
+    void testReadUserForbidden() {
+        this.restClientTestService.loginCustomer(this.webTestClient)
+                .get().uri(contextPath + USERS + MOBILE_ID,"999666999")
+                .exchange().expectStatus().isUnauthorized();
     }
 
     @Test

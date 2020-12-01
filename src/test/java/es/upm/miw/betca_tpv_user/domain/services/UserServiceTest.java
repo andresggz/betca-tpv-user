@@ -17,8 +17,7 @@ class UserServiceTest {
 
     @Test
     void testCreateUserForbidden() {
-        assertThrows(ForbiddenException.class, () ->
-                this.userService.createUser(User.builder().mobile("666000666").firstName("k").role(Role.ADMIN).build(), Role.MANAGER)
-        );
+        User user = User.builder().mobile("666000666").firstName("k").role(Role.ADMIN).build();
+        assertThrows(ForbiddenException.class, () -> this.userService.createUser(user, Role.MANAGER));
     }
 }

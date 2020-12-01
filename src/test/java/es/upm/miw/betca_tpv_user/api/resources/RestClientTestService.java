@@ -61,6 +61,10 @@ public class RestClientTestService {
         return this.login(Role.OPERATOR, "666666002", "6", webTestClient);
     }
 
+    public WebTestClient loginCustomer(WebTestClient webTestClient) {
+        return this.login(Role.OPERATOR, "66", "6", webTestClient);
+    }
+
 
     public TokenDto getTokenDto() {
         return tokenDto;

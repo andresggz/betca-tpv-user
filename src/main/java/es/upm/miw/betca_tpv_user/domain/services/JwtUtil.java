@@ -16,6 +16,9 @@ public class JwtUtil {
     private static final int EXPIRES_IN_MILLISECOND = 3600000;
     private static final String SECRET = "secret-password-test";
 
+    private JwtUtil() {
+    }
+
     public static String extractToken(String bearer) {
         if (bearer != null && bearer.startsWith(BEARER) && 3 == bearer.split("\\.").length) {
             return bearer.substring(BEARER.length());

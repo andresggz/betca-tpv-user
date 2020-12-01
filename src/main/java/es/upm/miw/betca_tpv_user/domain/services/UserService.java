@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -44,20 +43,15 @@ public class UserService {
     }
 
     private List< Role > authorizedRoles(Role roleClaim) {
-        List< Role > roles = new ArrayList<>();
-        switch (roleClaim) {
-            case ADMIN:
-                roles.add(Role.ADMIN);
-            case MANAGER:
-                roles.add(Role.MANAGER);
-                roles.add(Role.OPERATOR);
-            case OPERATOR:
-                roles.add(Role.CUSTOMER);
-                break;
-            default:
-                throw new ForbiddenException("Insufficient role to create users");
+        if (Role.ADMIN.equals(roleClaim)) {
+            return List.of(Role.ADMIN, Role.MANAGER, Role.OPERATOR, Role.CUSTOMER);
+        } else if (Role.MANAGER.equals(roleClaim)) {
+            return List.of(Role.MANAGER, Role.OPERATOR, Role.CUSTOMER);
+        } else if (Role.OPERATOR.equals(roleClaim)) {
+            return List.of(Role.CUSTOMER);
+        } else {
+            throw new ForbiddenException("Insufficient role to create users");
         }
-        return roles;
     }
 
     private void noExistByMobile(String mobile) {
@@ -73,7 +67,7 @@ public class UserService {
         ).stream();
     }
 
-    public User ReadByMobile(String mobile) {
+    public User readByMobile(String mobile) {
         return this.userRepository.findByMobile(mobile).orElseThrow(() -> new NotFoundException("The mobile don't exist: " + mobile));
     }
 }

@@ -22,5 +22,5 @@ public interface UserRepository extends JpaRepository< User, Integer > {
             "(?5 is null or lower(u.dni) like lower(concat('%',?5,'%'))) and" +
             "(u.role in ?6)")
     List< User > findByMobileAndFirstNameAndFamilyNameAndEmailAndDniContainingNullSafe(
-            String mobile, String firstName, String FamilyName, String Email, String dni, Collection< Role > roles);
+            String mobile, String firstName, String familyName, String email, String dni, Collection< Role > roles);
 }

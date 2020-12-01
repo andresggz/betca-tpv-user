@@ -54,7 +54,7 @@ public class UserResource {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping(MOBILE_ID)
     public UserDto readUser(@PathVariable String mobile) {
-        return UserDto.ofMobileFirstName(this.userService.ReadByMobile(mobile));
+        return UserDto.ofMobileFirstName(this.userService.readByMobile(mobile));
     }
 
     @SecurityRequirement(name = "bearerAuth")
