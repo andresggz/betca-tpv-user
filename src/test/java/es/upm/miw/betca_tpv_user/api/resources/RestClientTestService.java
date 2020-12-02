@@ -28,9 +28,9 @@ public class RestClientTestService {
         return false;
     }
 
-    private WebTestClient login(Role role, String mobile, String pass, WebTestClient webTestClient) {
+    private WebTestClient login(Role role, String mobile, WebTestClient webTestClient) {
         if (!this.isRole(role)) {
-            return login(mobile, pass, webTestClient);
+            return login(mobile, "6", webTestClient);
         } else {
             return webTestClient.mutate()
                     .defaultHeader("Authorization", "Bearer " + this.tokenDto.getToken()).build();
@@ -50,21 +50,20 @@ public class RestClientTestService {
     }
 
     public WebTestClient loginAdmin(WebTestClient webTestClient) {
-        return this.login(Role.ADMIN, "666666000", "6", webTestClient);
+        return this.login(Role.ADMIN, "666666000", webTestClient);
     }
 
     public WebTestClient loginManager(WebTestClient webTestClient) {
-        return this.login(Role.MANAGER, "666666001", "6", webTestClient);
+        return this.login(Role.MANAGER, "666666001", webTestClient);
     }
 
     public WebTestClient loginOperator(WebTestClient webTestClient) {
-        return this.login(Role.OPERATOR, "666666002", "6", webTestClient);
+        return this.login(Role.OPERATOR, "666666002", webTestClient);
     }
 
     public WebTestClient loginCustomer(WebTestClient webTestClient) {
-        return this.login(Role.OPERATOR, "66", "6", webTestClient);
+        return this.login(Role.OPERATOR, "66", webTestClient);
     }
-
 
     public TokenDto getTokenDto() {
         return tokenDto;

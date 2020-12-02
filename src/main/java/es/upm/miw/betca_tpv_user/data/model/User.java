@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "tpvUser") // conflict with user table
 public class User {
     @Id
     @GeneratedValue

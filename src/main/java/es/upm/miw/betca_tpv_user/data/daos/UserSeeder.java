@@ -3,7 +3,6 @@ package es.upm.miw.betca_tpv_user.data.daos;
 import es.upm.miw.betca_tpv_user.data.model.Role;
 import es.upm.miw.betca_tpv_user.data.model.User;
 import org.apache.logging.log4j.LogManager;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -14,16 +13,13 @@ import java.util.Arrays;
 @Repository
 public class UserSeeder {
 
-    private String mobile;
-    private String username;
-    private String password;
+    private static final String SUPER_USER = "admin";
+    private static final String MOBILE = "6";
+    private static final String PASSWORD = "6";
+
     private UserRepository userRepository;
 
-    public UserSeeder(@Value("${miw.admin.mobile}") String mobile, @Value("${miw.admin.username}") String username,
-                      @Value("${miw.admin.password}") String password, UserRepository userRepository, Environment environment) {
-        this.mobile = mobile;
-        this.username = username;
-        this.password = password;
+    public UserSeeder(UserRepository userRepository, Environment environment) {
         this.userRepository = userRepository;
         String[] profiles = environment.getActiveProfiles();
         if (Arrays.asList(profiles).contains("dev")) {
@@ -46,9 +42,9 @@ public class UserSeeder {
 
     private void initialize() {
         LogManager.getLogger(this.getClass()).warn("------- Finding Admin -----------");
-        if (this.userRepository.findByMobile(this.mobile).isEmpty()) {
-            User user = User.builder().mobile(this.mobile).firstName(this.username)
-                    .password(new BCryptPasswordEncoder().encode(this.password))
+        if (this.userRepository.findByFirstName(SUPER_USER).isEmpty()) {
+            User user = User.builder().mobile(MOBILE).firstName(SUPER_USER)
+                    .password(new BCryptPasswordEncoder().encode(PASSWORD))
                     .role(Role.ADMIN).registrationDate(LocalDateTime.now()).active(true).build();
             this.userRepository.save(user);
             LogManager.getLogger(this.getClass()).warn("------- Created Admin -----------");

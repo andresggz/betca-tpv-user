@@ -1,4 +1,4 @@
-name: TPV User
+name: CI - Test
 
 on:
   push:

@@ -13,7 +13,6 @@ import static es.upm.miw.betca_tpv_user.api.resources.UserResource.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 @ApiTestConfig
 class UserResourceIT {
 
@@ -29,7 +28,6 @@ class UserResourceIT {
     @Test
     void testLogin() {
         this.restClientTestService.loginAdmin(this.webTestClient);
-        System.out.println(this.restClientTestService.getTokenDto().getToken());
         assertTrue(this.restClientTestService.getTokenDto().getToken().length() > 10);
     }
 
