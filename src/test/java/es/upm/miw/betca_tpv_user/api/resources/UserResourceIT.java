@@ -28,7 +28,7 @@ class UserResourceIT {
     @Test
     void testLogin() {
         this.restClientTestService.loginAdmin(this.webTestClient);
-        assertTrue(this.restClientTestService.getTokenDto().getToken().length() > 10);
+        assertTrue(this.restClientTestService.getToken().length() > 10);
     }
 
     @Test

@@ -1,16 +1,15 @@
-package es.upm.miw.betca_tpv_user;
+package es.upm.miw.betca_tpv_user.data.daos;
 
-import es.upm.miw.betca_tpv_user.data.daos.UserSeeder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Profile("prod")
-public class UserSeederTest {
+@Profile("dev")
+public class UserSeederDev {
 
     @Autowired
-    public UserSeederTest(UserSeeder userSeeder) {
+    public UserSeederDev(UserSeeder userSeeder) {
         userSeeder.deleteAllAndInitializeAndSeedDataBase();
     }
 

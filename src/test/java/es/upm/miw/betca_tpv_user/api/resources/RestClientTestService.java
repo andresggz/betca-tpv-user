@@ -5,6 +5,7 @@ import es.upm.miw.betca_tpv_user.api.http_errors.UnauthorizedException;
 import es.upm.miw.betca_tpv_user.data.model.Role;
 import es.upm.miw.betca_tpv_user.domain.services.JwtService;
 import org.apache.logging.log4j.LogManager;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,13 @@ public class RestClientTestService {
     @Autowired
     private JwtService jwtService;
 
-    private TokenDto tokenDto;
+    private String token;
 
     private boolean isRole(Role role) {
         try {
-            return this.tokenDto != null && jwtService.role(tokenDto.getToken()).equals(role.name());
+            return this.token != null && jwtService.role(token).equals(role.name());
         } catch (UnauthorizedException e) {
-            LogManager.getLogger(this.getClass()).error("------- is role -----------");
+            LogManager.getLogger(this.getClass()).error("------- is role exception: " + role);
         }
         return false;
     }
@@ -37,20 +38,24 @@ public class RestClientTestService {
             return login(mobile, webTestClient);
         } else {
             return webTestClient.mutate()
-                    .defaultHeader("Authorization", "Bearer " + this.tokenDto.getToken()).build();
+                    .defaultHeader("Authorization", "Bearer " + this.token).build();
         }
     }
 
     public WebTestClient login(String mobile, WebTestClient webTestClient) {
-        this.tokenDto = webTestClient
+        TokenDto tokenDto = webTestClient
                 .mutate().filter(basicAuthentication(mobile, "6")).build()
                 .post().uri(contextPath + UserResource.USERS + UserResource.TOKEN)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(TokenDto.class)
+                .value(Assertions::assertNotNull)
                 .returnResult().getResponseBody();
+        if (tokenDto != null) {
+            this.token = tokenDto.getToken();
+        }
         return webTestClient.mutate()
-                .defaultHeader("Authorization", "Bearer " + this.tokenDto.getToken()).build();
+                .defaultHeader("Authorization", "Bearer " + this.token).build();
     }
 
     public WebTestClient loginAdmin(WebTestClient webTestClient) {
@@ -69,8 +74,8 @@ public class RestClientTestService {
         return this.login(Role.CUSTOMER, "66", webTestClient);
     }
 
-    public TokenDto getTokenDto() {
-        return tokenDto;
+    public String getToken() {
+        return token;
     }
 
 }

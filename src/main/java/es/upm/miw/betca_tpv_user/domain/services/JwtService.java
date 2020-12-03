@@ -75,7 +75,6 @@ public class JwtService {
         } catch (Exception exception) {
             return Optional.empty();
         }
-
     }
 
 }
