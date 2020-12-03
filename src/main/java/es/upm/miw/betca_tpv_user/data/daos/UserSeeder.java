@@ -3,31 +3,24 @@ package es.upm.miw.betca_tpv_user.data.daos;
 import es.upm.miw.betca_tpv_user.data.model.Role;
 import es.upm.miw.betca_tpv_user.data.model.User;
 import org.apache.logging.log4j.LogManager;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 @Repository
 public class UserSeeder {
 
-    private static final String SUPER_USER = "admin";
-    private static final String MOBILE = "6";
-    private static final String PASSWORD = "6";
-
+    private DatabaseStarting databaseStarting;
     private UserRepository userRepository;
 
-    public UserSeeder(UserRepository userRepository, Environment environment) {
+    @Autowired
+    public UserSeeder(UserRepository userRepository, DatabaseStarting databaseStarting) {
         this.userRepository = userRepository;
-        String[] profiles = environment.getActiveProfiles();
-        if (Arrays.asList(profiles).contains("dev")) {
-            this.deleteAllAndInitializeAndSeedDataBase();
-        } else if (Arrays.asList(profiles).contains("prod")) {
-            this.initialize();
-        }
+        this.databaseStarting = databaseStarting;
     }
 
     public void deleteAllAndInitializeAndSeedDataBase() {
@@ -37,19 +30,8 @@ public class UserSeeder {
 
     public void deleteAllAndInitialize() {
         this.userRepository.deleteAll();
-        this.initialize();
         LogManager.getLogger(this.getClass()).warn("------- Deleted All -----------");
-    }
-
-    private void initialize() {
-        LogManager.getLogger(this.getClass()).warn("------- Finding Admin -----------");
-        if (this.userRepository.findByRoleIn(List.of(Role.ADMIN)).isEmpty()) {
-            User user = User.builder().mobile(MOBILE).firstName(SUPER_USER)
-                    .password(new BCryptPasswordEncoder().encode(PASSWORD))
-                    .role(Role.ADMIN).registrationDate(LocalDateTime.now()).active(true).build();
-            this.userRepository.save(user);
-            LogManager.getLogger(this.getClass()).warn("------- Created Admin -----------");
-        }
+        this.databaseStarting.initialize();
     }
 
     private void seedDataBase() {

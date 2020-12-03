@@ -34,16 +34,16 @@ public class RestClientTestService {
 
     private WebTestClient login(Role role, String mobile, WebTestClient webTestClient) {
         if (!this.isRole(role)) {
-            return login(mobile, "6", webTestClient);
+            return login(mobile, webTestClient);
         } else {
             return webTestClient.mutate()
                     .defaultHeader("Authorization", "Bearer " + this.tokenDto.getToken()).build();
         }
     }
 
-    public WebTestClient login(String mobile, String pass, WebTestClient webTestClient) {
+    public WebTestClient login(String mobile, WebTestClient webTestClient) {
         this.tokenDto = webTestClient
-                .mutate().filter(basicAuthentication(mobile, pass)).build()
+                .mutate().filter(basicAuthentication(mobile, "6")).build()
                 .post().uri(contextPath + UserResource.USERS + UserResource.TOKEN)
                 .exchange()
                 .expectStatus().isOk()
@@ -54,7 +54,7 @@ public class RestClientTestService {
     }
 
     public WebTestClient loginAdmin(WebTestClient webTestClient) {
-        return this.login(Role.ADMIN, "666666000", webTestClient);
+        return this.login(Role.ADMIN, "6", webTestClient);
     }
 
     public WebTestClient loginManager(WebTestClient webTestClient) {
@@ -66,7 +66,7 @@ public class RestClientTestService {
     }
 
     public WebTestClient loginCustomer(WebTestClient webTestClient) {
-        return this.login(Role.OPERATOR, "66", webTestClient);
+        return this.login(Role.CUSTOMER, "66", webTestClient);
     }
 
     public TokenDto getTokenDto() {
