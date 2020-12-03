@@ -41,6 +41,7 @@ public class UserDto {
 
     public UserDto(User user) {
         BeanUtils.copyProperties(user, this);
+        this.password = "secret";
     }
 
     public static UserDto ofMobileFirstName(User user) {

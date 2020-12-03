@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("prod")
+@Profile("dev")
 public class AdminService {
 
     private UserSeeder userSeeder;
 
     @Autowired
-    public AdminService(es.upm.miw.betca_tpv_user.data.daos.UserSeeder userSeeder) {
+    public AdminService(UserSeeder userSeeder) {
         this.userSeeder = userSeeder;
     }
 

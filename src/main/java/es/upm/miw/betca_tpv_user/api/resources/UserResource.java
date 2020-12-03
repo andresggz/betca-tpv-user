@@ -54,14 +54,14 @@ public class UserResource {
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping(MOBILE_ID)
     public UserDto readUser(@PathVariable String mobile) {
-        return UserDto.ofMobileFirstName(this.userService.readByMobile(mobile));
+        return new UserDto(this.userService.readByMobile(mobile));
     }
 
     @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public Stream< UserDto > readAll() {
         return this.userService.readAll(this.extractRoleClaims())
-                .map(UserDto::new);
+                .map(UserDto::ofMobileFirstName);
     }
 
     @SecurityRequirement(name = "bearerAuth")

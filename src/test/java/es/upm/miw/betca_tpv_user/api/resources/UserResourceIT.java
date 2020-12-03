@@ -34,7 +34,7 @@ class UserResourceIT {
     @Test
     void testReadUser() {
         this.restClientTestService.loginAdmin(this.webTestClient)
-                .get().uri(contextPath + USERS + MOBILE_ID,"666666003")
+                .get().uri(contextPath + USERS + MOBILE_ID, "666666003")
                 .exchange().expectStatus().isOk()
                 .expectBody(UserDto.class)
                 .value(user -> assertEquals("c1", user.getFirstName()));
@@ -43,14 +43,14 @@ class UserResourceIT {
     @Test
     void testReadUserNotFound() {
         this.restClientTestService.loginAdmin(this.webTestClient)
-                .get().uri(contextPath + USERS + MOBILE_ID,"999666999")
+                .get().uri(contextPath + USERS + MOBILE_ID, "999666999")
                 .exchange().expectStatus().isNotFound();
     }
 
     @Test
     void testReadUserForbidden() {
         this.restClientTestService.loginCustomer(this.webTestClient)
-                .get().uri(contextPath + USERS + MOBILE_ID,"999666999")
+                .get().uri(contextPath + USERS + MOBILE_ID, "999666999")
                 .exchange().expectStatus().isUnauthorized();
     }
 
@@ -121,9 +121,7 @@ class UserResourceIT {
                 .get().uri(contextPath + USERS)
                 .exchange().expectStatus().isOk()
                 .expectBodyList(UserDto.class)
-                .value(users -> assertTrue(users.stream().allMatch(user -> null != user.getActive())))
-                .value(users -> assertTrue(users.stream().allMatch(UserDto::getActive)))
-                .value(users -> assertTrue(users.stream().noneMatch(user -> "adm".equals(user.getFirstName()))))
+                .value(users -> assertTrue(users.stream().noneMatch(user -> "admin".equals(user.getFirstName()))))
                 .value(users -> assertTrue(users.stream().noneMatch(user -> "man".equals(user.getFirstName()))))
                 .value(users -> assertTrue(users.stream().noneMatch(user -> "ope".equals(user.getFirstName()))))
                 .value(users -> assertTrue(users.stream().anyMatch(user -> "c1".equals(user.getFirstName()))));

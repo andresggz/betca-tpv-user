@@ -1,5 +1,6 @@
 package es.upm.miw.betca_tpv_user.api.resources;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping(AdminResource.ADMINS)
-@Profile("prod")
+@Profile("dev")
 public class AdminResource {
 
     public static final String ADMINS = "/admins";
@@ -24,11 +25,13 @@ public class AdminResource {
         this.adminService = adminService;
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping(value = DB)
     public void deleteDb() {
         this.adminService.deleteAllAndInitialize();
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping(value = DB)
     public void seedDb() {
         this.adminService.seedDataBase();

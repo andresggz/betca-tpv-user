@@ -12,6 +12,6 @@ class UserDtoTest {
         UserDto x = new UserDto(User.builder().mobile("6").firstName("fi").familyName("fa").address("a").email("e")
                 .dni("d").password("1").build());
         assertEquals("6", x.getMobile());
-        assertEquals("1", x.getPassword());
+        assertEquals("secret", x.getPassword());
     }
 }
