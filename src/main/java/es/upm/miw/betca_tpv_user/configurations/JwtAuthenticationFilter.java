@@ -1,7 +1,8 @@
 package es.upm.miw.betca_tpv_user.configurations;
 
 import es.upm.miw.betca_tpv_user.data.model.Role;
-import es.upm.miw.betca_tpv_user.domain.services.JwtUtil;
+import es.upm.miw.betca_tpv_user.domain.services.JwtService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +21,9 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     private static final String AUTHORIZATION = "Authorization";
 
+    @Autowired
+    private JwtService jwtService;
+
     public JwtAuthenticationFilter(AuthenticationManager authManager) {
         super(authManager);
     }
@@ -27,11 +31,11 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String token = JwtUtil.extractToken(request.getHeader(AUTHORIZATION));
+        String token = jwtService.extractToken(request.getHeader(AUTHORIZATION));
         if (!token.isEmpty()) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(Role.PREFIX + JwtUtil.role(token));
+            GrantedAuthority authority = new SimpleGrantedAuthority(Role.PREFIX + jwtService.role(token));
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(JwtUtil.user(token), token, List.of(authority));
+                    new UsernamePasswordAuthenticationToken(jwtService.user(token), token, List.of(authority));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         chain.doFilter(request, response);

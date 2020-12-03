@@ -18,15 +18,17 @@ import java.util.stream.Stream;
 public class UserService {
 
     private UserRepository userRepository;
+    private JwtService jwtService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JwtService jwtService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
     public Optional< String > login(String mobile) {
         return this.userRepository.findByMobile(mobile)
-                .map(user -> JwtUtil.createToken(user.getMobile(), user.getFirstName(), user.getRole().name()));
+                .map(user -> jwtService.createToken(user.getMobile(), user.getFirstName(), user.getRole().name()));
     }
 
     public void createUser(User user, Role roleClaim) {

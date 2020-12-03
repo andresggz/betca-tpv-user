@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Repository
 public class UserSeeder {
@@ -42,7 +43,7 @@ public class UserSeeder {
 
     private void initialize() {
         LogManager.getLogger(this.getClass()).warn("------- Finding Admin -----------");
-        if (this.userRepository.findByFirstName(SUPER_USER).isEmpty()) {
+        if (this.userRepository.findByRoleIn(List.of(Role.ADMIN)).isEmpty()) {
             User user = User.builder().mobile(MOBILE).firstName(SUPER_USER)
                     .password(new BCryptPasswordEncoder().encode(PASSWORD))
                     .role(Role.ADMIN).registrationDate(LocalDateTime.now()).active(true).build();
