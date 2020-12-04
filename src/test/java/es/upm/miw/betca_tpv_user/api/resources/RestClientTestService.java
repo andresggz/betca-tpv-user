@@ -7,7 +7,6 @@ import es.upm.miw.betca_tpv_user.domain.services.JwtService;
 import org.apache.logging.log4j.LogManager;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -15,9 +14,6 @@ import static org.springframework.web.reactive.function.client.ExchangeFilterFun
 
 @Service
 public class RestClientTestService {
-
-    @Value("${server.servlet.contextPath}")
-    private String contextPath;
 
     @Autowired
     private JwtService jwtService;
@@ -45,7 +41,7 @@ public class RestClientTestService {
     public WebTestClient login(String mobile, WebTestClient webTestClient) {
         TokenDto tokenDto = webTestClient
                 .mutate().filter(basicAuthentication(mobile, "6")).build()
-                .post().uri(contextPath + UserResource.USERS + UserResource.TOKEN)
+                .post().uri(UserResource.USERS + UserResource.TOKEN)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(TokenDto.class)

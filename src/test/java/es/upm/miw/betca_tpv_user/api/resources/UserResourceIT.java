@@ -4,7 +4,6 @@ import es.upm.miw.betca_tpv_user.api.dtos.UserDto;
 import es.upm.miw.betca_tpv_user.data.model.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
@@ -22,9 +21,6 @@ class UserResourceIT {
     @Autowired
     private RestClientTestService restClientTestService;
 
-    @Value("${server.servlet.context-path}")
-    private String contextPath;
-
     @Test
     void testLogin() {
         this.restClientTestService.loginAdmin(this.webTestClient);
@@ -34,7 +30,7 @@ class UserResourceIT {
     @Test
     void testReadUser() {
         this.restClientTestService.loginAdmin(this.webTestClient)
-                .get().uri(contextPath + USERS + MOBILE_ID, "666666003")
+                .get().uri(USERS + MOBILE_ID, "666666003")
                 .exchange().expectStatus().isOk()
                 .expectBody(UserDto.class)
                 .value(user -> assertEquals("c1", user.getFirstName()));
@@ -43,21 +39,21 @@ class UserResourceIT {
     @Test
     void testReadUserNotFound() {
         this.restClientTestService.loginAdmin(this.webTestClient)
-                .get().uri(contextPath + USERS + MOBILE_ID, "999666999")
+                .get().uri(USERS + MOBILE_ID, "999666999")
                 .exchange().expectStatus().isNotFound();
     }
 
     @Test
     void testReadUserForbidden() {
         this.restClientTestService.loginCustomer(this.webTestClient)
-                .get().uri(contextPath + USERS + MOBILE_ID, "999666999")
+                .get().uri(USERS + MOBILE_ID, "999666999")
                 .exchange().expectStatus().isUnauthorized();
     }
 
     @Test
     void testCreateUser() {
         this.restClientTestService.loginAdmin(this.webTestClient)
-                .post().uri(contextPath + USERS)
+                .post().uri(USERS)
                 .body(Mono.just(UserDto.builder().mobile("666000666").firstName("daemon").build()), UserDto.class)
                 .exchange().expectStatus().isOk();
     }
@@ -65,7 +61,7 @@ class UserResourceIT {
     @Test
     void testCreateUserUnauthorized() {
         this.webTestClient
-                .post().uri(contextPath + USERS)
+                .post().uri(USERS)
                 .body(Mono.just(UserDto.builder().mobile("666000666").firstName("daemon").build()), UserDto.class)
                 .exchange().expectStatus().isUnauthorized();
     }
@@ -73,7 +69,7 @@ class UserResourceIT {
     @Test
     void testCreateUserForbidden() {
         this.restClientTestService.loginManager(this.webTestClient)
-                .post().uri(contextPath + USERS)
+                .post().uri(USERS)
                 .body(Mono.just(UserDto.builder().mobile("666000666").firstName("daemon").role(Role.ADMIN).build()),
                         UserDto.class)
                 .exchange().expectStatus().isForbidden();
@@ -82,7 +78,7 @@ class UserResourceIT {
     @Test
     void testCreateUserConflict() {
         this.restClientTestService.loginAdmin(this.webTestClient)
-                .post().uri(contextPath + USERS)
+                .post().uri(USERS)
                 .body(Mono.just(UserDto.builder().mobile("666666000").firstName("daemon").build()), UserDto.class)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT);
@@ -91,7 +87,7 @@ class UserResourceIT {
     @Test
     void testCreateFullUser() {
         this.restClientTestService.loginManager(this.webTestClient)
-                .post().uri(contextPath + USERS)
+                .post().uri(USERS)
                 .body(Mono.just(UserDto.builder().mobile("666001666").firstName("daemon").familyName("family")
                         .address("address").password("123").dni("dni").email("email@gmail.com").build()), UserDto.class)
                 .exchange().expectStatus().isOk();
@@ -100,7 +96,7 @@ class UserResourceIT {
     @Test
     void testCreateUserBadNumber() {
         this.restClientTestService.loginOperator(this.webTestClient)
-                .post().uri(contextPath + USERS)
+                .post().uri(USERS)
                 .body(Mono.just(UserDto.builder().mobile("6").firstName("kk").build()), UserDto.class)
                 .exchange()
                 .expectStatus().isBadRequest();
@@ -109,7 +105,7 @@ class UserResourceIT {
     @Test
     void testCreateUserWithoutNumber() {
         this.restClientTestService.loginAdmin(this.webTestClient)
-                .post().uri(contextPath + USERS)
+                .post().uri(USERS)
                 .body(Mono.just(UserDto.builder().mobile(null).firstName("kk").build()), UserDto.class)
                 .exchange()
                 .expectStatus().isBadRequest();
@@ -118,7 +114,7 @@ class UserResourceIT {
     @Test
     void testReadAllOperator() {
         this.restClientTestService.loginOperator(this.webTestClient)
-                .get().uri(contextPath + USERS)
+                .get().uri(USERS)
                 .exchange().expectStatus().isOk()
                 .expectBodyList(UserDto.class)
                 .value(users -> assertTrue(users.stream().noneMatch(user -> "admin".equals(user.getFirstName()))))
@@ -132,7 +128,7 @@ class UserResourceIT {
         this.restClientTestService.loginOperator(this.webTestClient)
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(contextPath + USERS + SEARCH)
+                        .path(USERS + SEARCH)
                         .queryParam("mobile", "6")
                         .queryParam("firstName", "c")
                         .queryParam("dni", "e").build())
