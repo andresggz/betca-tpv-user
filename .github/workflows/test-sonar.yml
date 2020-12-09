@@ -1,4 +1,4 @@
-name: CI - Test
+name: Spring User - Tests
 
 on:
   push:
